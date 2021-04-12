@@ -1,0 +1,11 @@
+.homeCover {
+    height: 100vh;
+    width: 100vw;
+    background-color: beige;
+}
+
+.btn {
+    margin-left: 10px;
+    height: 30px;
+    width: 30px;
+}
