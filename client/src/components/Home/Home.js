@@ -10,7 +10,10 @@ const Home = (props) => {
   const location = useLocation();
 
   const userId = location.state.id;
-  console.log(userId);
+  
+  // const classes = axios.get('http://localhost:4001/get_classes/' + userId);
+  // console.log(classes)
+
 
   // add creating classroom func
   // when a class is created also add the same class to the user that creates the class
@@ -41,7 +44,7 @@ const Home = (props) => {
     <div className={classes.homeCover}>
       <div>
         <form onSubmit={createClass}>
-        <button>create class test</button>
+          <button>create class test</button>
         </form>
         
         <form onSubmit={joinClass}>
@@ -53,7 +56,7 @@ const Home = (props) => {
             placeholder="Classroom ID" />
           <button className={classes.btn}>+</button>
         </form>
-
+        
         id: {userId}
       </div>
     </div>

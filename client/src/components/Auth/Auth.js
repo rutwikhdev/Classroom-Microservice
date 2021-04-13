@@ -25,7 +25,7 @@ const Auth = (props) => {
     }).then((res) => {
       history.push({
         pathname: '/home',
-        state: { id: res.data}
+        state: { id: res.data }
       });
     }).catch((err) => {
       console.log(err);

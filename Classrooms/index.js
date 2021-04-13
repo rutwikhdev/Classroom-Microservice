@@ -12,12 +12,18 @@ app.use(cors());
 // when the user is created send the userId to evernt-bus -> classrom service recieve and add it to classes
 classes = { 'user1id': ['class1id', 'class2id', 'class3id']}
 
-app.post('/create_class', (req, res) => {
+app.post('/create_class', async (req, res) => {
     const classId = randomBytes(3).toString('hex');
     const { userId } = req.body;
 
     classes[userId].push(classId)
     console.log(classes);
+    
+    await axios.post('http://localhost:4009/events', {
+        type: 'ClassCreated',
+        data: classId
+    });
+
     res.status(201).send('Class created');
 });
 
@@ -26,7 +32,7 @@ app.post('/add_class', (req, res) => {
 });
 
 app.post('/get_classes/:id', (req, res) => {
-    res.status(200).send(arrayClasses);
+    res.status(200).send(classes[req.params.id]);
 });
 
 app.post('/events', (req, res) => {

@@ -50,7 +50,7 @@ app.post('/login', (req, res) => {
     });
 })
 
-app.get('/events', (req, res) => {
+app.post('/events', (req, res) => {
   console.log('Received event:', req.body.type);
 
   res.send({});
