@@ -1,52 +1,75 @@
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
-
-import classes from './Home.module.css';
-import Classroom from '../Classroom/Classroom';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import cookie from 'react-cookies';
+import { useHistory } from 'react-router-dom';
 
-const Home = (props) => {
+import styles from './Home.module.css';
+import Classroom from '../Classroom/Classroom';
+
+const Home = () => {
   const [classId, setClassId] = useState("");
-  const location = useLocation();
+  const [title, setTitle] = useState("");
+  const [classes, setClasses] = useState({});
+  const [key, setKey] = useState(0);
+  const history = useHistory();
 
-  const userId = location.state.id;
-  
-  // const classes = axios.get('http://localhost:4001/get_classes/' + userId);
-  // console.log(classes)
+  const userId = cookie.load('userId');
+  console.log('Logged in user: ',userId);
 
+  const logoutCookie = () => {
+    cookie.remove('userId', { path: '/' });
+    history.push({pathname: '/login'});
+  }
 
-  // add creating classroom func
-  // when a class is created also add the same class to the user that creates the class
-  const createClass = async (e) => {
-    e.preventDefault();
+  const createClass = async () => {
     console.log('Creating class');
     await axios.post('http://localhost:4001/create_class', {
-      userId
+      userId, title
     });
   }
 
-  // add classroom joining functionality to button
   const joinClass = async () => {
     console.log('Joining class');
     await axios.post('http://localhost:4001/add_class', {
-      userId
+      userId, classId
     });
   };
-  // make request to get all associated classes from classroom service
-  const getClassrooms = async () => {
-    await axios.post('http://localhost:4001/get_classes', {
-      userId
+
+  const fetchPosts = async () => {
+    const res = await axios.get('http://localhost:4001/get_classes/' + userId);
+    console.log('Server req', res);
+
+    setClasses(res.data);
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  var renderedClasses = <div></div>;
+  if (Object.keys(classes).length > 0) {
+    renderedClasses = Object.values(classes.data).map(post => {
+      return (
+        <Classroom key={post.classId} title={post.title} />
+      );
     });
   }
-  // display every classroom linked to using arrays and a smaller component
 
   return (
-    <div className={classes.homeCover}>
-      <div>
+
+    <div className={styles.homeCover}>
+
+      <div className={styles.formStyles}>
         <form onSubmit={createClass}>
-          <button>create class test</button>
+        <input
+            value={title}
+            type="text"
+            onChange={e => setTitle(e.target.value)}
+            required
+            placeholder="Title" />
+          <button className={styles.btn}>CREATE CLASS</button>
         </form>
-        
+
         <form onSubmit={joinClass}>
           <input
             value={classId}
@@ -54,11 +77,17 @@ const Home = (props) => {
             onChange={e => setClassId(e.target.value)}
             required
             placeholder="Classroom ID" />
-          <button className={classes.btn}>+</button>
+          <button className={styles.btn}>JOIN CLASS</button>
         </form>
-        
-        id: {userId}
-      </div>
+        </div>
+
+        <form onSubmit={logoutCookie}>
+          <button className={styles.logoutBtn}>LOGOUT</button>
+        </form>
+
+        <div className={styles.classSection}>
+          {renderedClasses}
+        </div>
     </div>
   );
 }

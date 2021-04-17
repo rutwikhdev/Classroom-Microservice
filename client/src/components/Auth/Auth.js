@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import cookie from 'react-cookies';
+
 import Home from '../Home/Home';
 import classes from './Auth.module.css';
 
@@ -10,7 +12,7 @@ import {
   useHistory,
 } from 'react-router-dom';
 
-// Send json instead of form-data
+
 const Auth = (props) => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -23,10 +25,8 @@ const Auth = (props) => {
     await axios.post('http://localhost:4000/login', {
       email, password
     }).then((res) => {
-      history.push({
-        pathname: '/home',
-        state: { id: res.data }
-      });
+      cookie.save('userId', res.data, { path: '/' })
+      history.push({pathname: '/home'});
     }).catch((err) => {
       console.log(err);
     });
@@ -110,7 +110,6 @@ const Auth = (props) => {
           <Home />
         </Route>
       </Switch>
-
     </div>
   );
 }

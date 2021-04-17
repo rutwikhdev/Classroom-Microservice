@@ -9,16 +9,19 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
 
-// when the user is created send the userId to evernt-bus -> classrom service recieve and add it to classes
-classes = { 'user1id': ['class1id', 'class2id', 'class3id']}
+users = { 'user1id': ['class1id', 'class2id', 'class3id'] }
+classes = { 'classid1': { classId: 'classid1', title: 'title1' } }
 
 app.post('/create_class', async (req, res) => {
     const classId = randomBytes(3).toString('hex');
-    const { userId } = req.body;
+    const { userId, title } = req.body;
 
-    classes[userId].push(classId)
-    console.log(classes);
-    
+    users[userId].push(classId);
+    classes[classId] = {classId: classId, title: title};
+
+    console.log('Users:', users);
+    console.log('Classes:',classes);
+
     await axios.post('http://localhost:4009/events', {
         type: 'ClassCreated',
         data: classId
@@ -28,21 +31,43 @@ app.post('/create_class', async (req, res) => {
 });
 
 app.post('/add_class', (req, res) => {
-    res.status(202).send();
+    const {userId, classId} = req.body;
+
+    if (Object.keys(classes).includes(classId)) {
+        users[userId].push(classId);
+    }
+
+    res.status(202).send({});
 });
 
-app.post('/get_classes/:id', (req, res) => {
-    res.status(200).send(classes[req.params.id]);
+app.get('/get_classes/:id', (req, res) => {
+    // this won't work if classroom service goes down because then the userId data will be lost and the returning will be undefined.
+    console.log('Users will refresh if classroom service goes down or reloaded: ',Object.keys(users));
+    const userId = req.params.id;
+    resClassList = [];
+    const clist = users[userId];
+    console.log('UserId: ',userId);
+    console.log('Clist:', clist);
+
+    for (i in clist) {
+        resClassList.push(classes[clist[i]]);
+    }
+
+    console.log('sending to client class data: ', resClassList)
+
+    res.status(200).send({data: resClassList});
 });
 
 app.post('/events', (req, res) => {
     console.log('Recieved event', req.body.type);
-    // if event is userCreated then classes[userId] : []
+
     const { type, data } = req.body;
+
     if (type == 'UserCreated') {
-        classes[data.id] = [];
+        users[data.id] = [];
     }
-    console.log(classes);
+
+    console.log(users);
     res.send({});
 });
 

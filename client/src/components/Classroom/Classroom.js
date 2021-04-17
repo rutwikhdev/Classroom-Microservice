@@ -1,14 +1,11 @@
 import React from 'react';
-import axios from 'axios';
 
-// import classes from './Classroom.module.css';
+import classes from './Classroom.module.css';
 
-const classroom = () => {
-
-    axios.get('http://localhost:4001/')
-
+const classroom = (props) => {
     return (
-        <div>
+        <div className={classes.card}>
+          <p className={classes.title}>{props.title}</p>
         </div>
     );
 }
