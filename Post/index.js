@@ -8,31 +8,41 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-posts = {}
+posts = { 'classid1': [{ title: 'post1', comments: ['comment1', 'comment2']}] };
 
-app.post('/post', (req, res) => {
-    // create post for first time
-    const { classId, title } = req.body;
-    posts[classId].append({
-        text: title, comments: [] 
+app.post('/create_post', async (req, res) => {
+    const { classId, postTitle } = req.body;
+
+    posts[classId].push({
+        title: postTitle, comments: []
     });
 
-    res.status(200).send('PostCreated');
+    await axios.post('http://localhost:4009/events', {
+        type: 'PostCreated',
+        data: 'postid'
+    });
+
+    res.status(200).send(posts[classId]);
 })
 
-app.get('/post', (req, res) => {
-    // return all posts
-    res.status(200).send(posts);
+app.post('/add_comment', (req, res) => {
+
+})
+
+app.get('/get_posts/:id', (req, res) => {
+    const classId = req.params.id;
+    res.status(200).send(posts[classId]);
 })
 
 app.post('/events', (req, res) => {
     const event = req.body;
     console.log('Received event:', event.type);
+    console.log(posts);
 
     if (event.type == 'ClassCreated') {
         posts[event.data] = [];
     }
-    console.log(posts);
+
     res.send({});
 })
 

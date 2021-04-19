@@ -19,9 +19,6 @@ app.post('/create_class', async (req, res) => {
     users[userId].push(classId);
     classes[classId] = {classId: classId, title: title};
 
-    console.log('Users:', users);
-    console.log('Classes:',classes);
-
     await axios.post('http://localhost:4009/events', {
         type: 'ClassCreated',
         data: classId
@@ -46,14 +43,10 @@ app.get('/get_classes/:id', (req, res) => {
     const userId = req.params.id;
     resClassList = [];
     const clist = users[userId];
-    console.log('UserId: ',userId);
-    console.log('Clist:', clist);
 
     for (i in clist) {
         resClassList.push(classes[clist[i]]);
     }
-
-    console.log('sending to client class data: ', resClassList)
 
     res.status(200).send({data: resClassList});
 });
@@ -67,7 +60,6 @@ app.post('/events', (req, res) => {
         users[data.id] = [];
     }
 
-    console.log(users);
     res.send({});
 });
 

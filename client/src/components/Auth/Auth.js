@@ -3,6 +3,7 @@ import axios from 'axios';
 import cookie from 'react-cookies';
 
 import Home from '../Home/Home';
+import Posts from '../Posts/Posts';
 import classes from './Auth.module.css';
 
 import {
@@ -35,7 +36,8 @@ const Auth = (props) => {
     setPassword("");
   }
 
-  const trySignup = async () => {
+  const trySignup = async (e) => {
+    e.preventDefault();
 
     await axios.post('http://localhost:4000/signup', {
       email, username, password
@@ -108,6 +110,9 @@ const Auth = (props) => {
         </Route>
         <Route path='/home'>
           <Home />
+        </Route>
+        <Route path='/posts'>
+          <Posts />
         </Route>
       </Switch>
     </div>

@@ -32,11 +32,9 @@ app.post('/signup', async (req, res) => {
     });
 
     res.status(201).send('User signed up');
-    console.log(Users);
 })
 
 app.post('/login', (req, res) => {
-    console.log(Users);
     const { email, password } = req.body;
 
     Users.filter((user) => {

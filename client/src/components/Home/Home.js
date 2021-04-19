@@ -10,11 +10,9 @@ const Home = () => {
   const [classId, setClassId] = useState("");
   const [title, setTitle] = useState("");
   const [classes, setClasses] = useState({});
-  const [key, setKey] = useState(0);
   const history = useHistory();
 
   const userId = cookie.load('userId');
-  console.log('Logged in user: ',userId);
 
   const logoutCookie = () => {
     cookie.remove('userId', { path: '/' });
@@ -35,22 +33,21 @@ const Home = () => {
     });
   };
 
-  const fetchPosts = async () => {
+  const fetchClasses = async () => {
     const res = await axios.get('http://localhost:4001/get_classes/' + userId);
-    console.log('Server req', res);
 
     setClasses(res.data);
   };
 
   useEffect(() => {
-    fetchPosts();
+    fetchClasses();
   }, []);
 
   var renderedClasses = <div></div>;
   if (Object.keys(classes).length > 0) {
     renderedClasses = Object.values(classes.data).map(post => {
       return (
-        <Classroom key={post.classId} title={post.title} />
+        <Classroom key={post.classId} classId={post.classId} title={post.title} />
       );
     });
   }
