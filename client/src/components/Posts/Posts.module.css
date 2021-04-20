@@ -1,0 +1,55 @@
+body {
+   margin: 0;
+   padding: 0;
+}
+
+.centerPosts {
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+}
+
+.classTitle {
+  margin: 0;
+  padding: 50px;
+  font-size: 32px;
+}
+
+.allPosts {
+  height: fit-content;
+  width: 40%;
+  margin: auto;
+}
+
+.singlePost {
+  margin-top: 50px;
+  background: whitesmoke;
+  width: 100%;
+  height: fit-content;
+  border-radius: 15px;
+}
+
+.postTitle {
+  text-align: left;
+  padding: 10px 60px;
+}
+
+.postBtn {
+  height: 35px;
+  margin-left: 10px;
+}
+
+.commentBtn {
+  height: 35px;
+  margin-left: 10px;
+}
+
+.postText {
+  width: 20%;
+  height: 35px;
+}
+
+.commentText {
+  width: 60%;
+  height: 35px;
+}

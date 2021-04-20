@@ -8,13 +8,14 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-posts = { 'classid1': [{ title: 'post1', comments: ['comment1', 'comment2']}] };
+posts = { 'classid1': [{ id: 'random(6)', title: 'post1', comments: ['comment1', 'comment2']}] };
 
 app.post('/create_post', async (req, res) => {
+    const id = randomBytes(6).toString('hex');
     const { classId, postTitle } = req.body;
 
     posts[classId].push({
-        title: postTitle, comments: []
+        id: id, title: postTitle, comments: []
     });
 
     await axios.post('http://localhost:4009/events', {
@@ -26,7 +27,15 @@ app.post('/create_post', async (req, res) => {
 })
 
 app.post('/add_comment', (req, res) => {
+    const data = req.body;
+    const arr = posts[data.class];
 
+    for (i in arr) {
+      if (arr[i].id == data.id) {
+        arr[i]['comments'].push(data.text);
+      }
+    }
+    console.log(posts[data.class]);
 })
 
 app.get('/get_posts/:id', (req, res) => {
@@ -37,7 +46,6 @@ app.get('/get_posts/:id', (req, res) => {
 app.post('/events', (req, res) => {
     const event = req.body;
     console.log('Received event:', event.type);
-    console.log(posts);
 
     if (event.type == 'ClassCreated') {
         posts[event.data] = [];

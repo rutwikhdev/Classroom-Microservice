@@ -10,16 +10,16 @@ app.post('/events', async (req, res) => {
     const event = req.body;
     console.log('Event Bus: Received event ' + event.type);
 
+    await axios.post('http://localhost:4000/events', event).catch((err) => {
+        console.log('Auth Service: ', err.message);
+    });
+
     await axios.post('http://localhost:4001/events', event).catch((err) => {
         console.log('Classroom Service: ', err.message);
     });
 
     await axios.post('http://localhost:4002/events', event).catch((err) => {
         console.log('Posts Service: ', err.message);
-    });
-
-    await axios.post('http://localhost:4000/events', event).catch((err) => {
-        console.log('Auth Service: ', err.message);
     });
 
     res.send({ status: 'OK' });
