@@ -52,6 +52,15 @@ const Auth = (props) => {
     setUsername("");
   };
 
+  const navigation = () => {
+    return (
+      <nav className="nav-links">
+        <Link to="/login" className={classes.navLinks}>Login</Link>
+        <Link to="/signup" className={classes.navLinks}>Signup</Link>
+      </nav>
+    )
+  }
+
 
   return (
     <div>
@@ -72,11 +81,8 @@ const Auth = (props) => {
               required
               placeholder="Password" />
             <button className={classes.submitButtons}>LOGIN</button>
+            {navigation()}
           </form>
-          <nav className="nav-links">
-            <Link to="/login">Login</Link>
-            <Link to="/signup">Signup</Link>
-          </nav>
         </Route>
         <Route path="/signup">
           <form onSubmit={trySignup} className={classes.authForms}>
@@ -102,11 +108,9 @@ const Auth = (props) => {
               placeholder="Password"
             />
             <button className={classes.submitButtons}>SIGN UP</button>
+            {navigation()}
           </form>
-          <nav className="nav-links">
-            <Link to="/login">Login</Link>
-            <Link to="/signup">Signup</Link>
-          </nav>
+
         </Route>
         <Route path='/home'>
           <Home />

@@ -24,6 +24,8 @@ app.post('/create_class', async (req, res) => {
         data: classId
     });
 
+    console.log('ClassCreated:',classId);
+
     res.status(201).send('Class created');
 });
 

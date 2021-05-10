@@ -1,24 +1,28 @@
 body {
   margin: 0;
   padding: 0;
+  background-color: 
 }
 
 .card {
-  background: beige;
+  background: #323232;
   margin: 20px;
-  height: 250px;
-  width: 275px;
+  height: 350px;
+  width: 375px;
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
+
 .card:hover {
   box-shadow: 2px 3px 8px gray;
 }
+
 .title {
   margin-top: 50px;
   padding: 0px 5px;
   text-align: center;
   font-size: 20px;
   font-family: Arial;
+  color: #43ABB7;
 }

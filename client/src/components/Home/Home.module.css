@@ -2,23 +2,31 @@ body {
   margin: 0;
   padding: 0;
 }
+
 .btn {
   margin-left: 10px;
-  height: 30px;
+  height: 35px;
   width: fit-content;
   font-weight: bold;
   letter-spacing: 1px;
+  background: #50423D;
+  color: #E0D79D;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
 }
+
 .classSection {
   margin: auto;
   height: fit-content;
-  width: 70%;
+  width: 95%;
   position: relative;
   display: flex;
   flex-flow: row;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
 }
+
 .logoutBtn {
   position: absolute;
   top: 2%;
@@ -26,7 +34,13 @@ body {
   height: 30px;
   font-weight: bold;
   letter-spacing: 1px;
+  background: #50423D;
+  color: #E0D79D;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
 }
+
 .formStyles {
   width: 100vw;
   height: fit-content;

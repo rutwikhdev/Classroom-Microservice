@@ -47,11 +47,22 @@ const Posts = () => {
       class: classId,
       text: comments[postId]
     });
+  }
 
-    console.log('After submission: ', postId, comments);
+  const renderComments = (commentArr) => {
+
+    var allComments = <div></div>;
+    allComments = Object.values(commentArr).map(text => {
+      return (
+        <p className={styles.commentTitle}>C: {text}</p>
+      )
+    })
+
+    return allComments
   }
 
    var renderedPosts = <div></div>;
+   console.log(posts);
    if (Object.keys(posts).length > 0) {
      renderedPosts = Object.values(posts).map(post => {
        return (
@@ -59,6 +70,7 @@ const Posts = () => {
             <p className={styles.postTitle}>
               Q: {post.title}
             </p>
+            {renderComments(post.comments)}
             <input
               name={post.id}
               className={styles.commentText}
@@ -69,6 +81,7 @@ const Posts = () => {
               placeholder="Comment"
             />
             <button className={styles.commentBtn}>COMMENT</button>
+
           </form>
        );
      });
@@ -76,6 +89,7 @@ const Posts = () => {
 
   return (
     <div className={styles.centerPosts}>
+    <div className={styles.colorBox}></div>
     <h2 className={styles.classTitle}>{params.title}</h2>
 
       <form onSubmit={createPost}>
