@@ -18,10 +18,6 @@ const Posts = () => {
     setPosts(res.data);
   };
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
   const createPost = async (e) => {
     e.preventDefault();
     const res = await axios.post('http://localhost:4002/create_post', { classId, postTitle });
@@ -48,6 +44,10 @@ const Posts = () => {
       text: comments[postId]
     });
   }
+
+  useEffect(() => {
+    fetchPosts();
+  }, [createComment]);
 
   const renderComments = (commentArr) => {
 
