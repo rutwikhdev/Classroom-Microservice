@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
 
-var url = "mongodb://localhost:27017/";
+var url = 'mongodb://localhost:27017/';
 
 app.post('/signup', async (req, res) => {
     const id = randomBytes(4).toString('hex');
@@ -19,19 +19,19 @@ app.post('/signup', async (req, res) => {
 
     await MongoClient.connect(url, (err, db) => {
         if (err) throw err;
-        var dbo = db.db("ClassroomMS");
+        var dbo = db.db('ClassroomMS');
         var search = { email: email };
 
-        dbo.collection("auth").find(search).toArray((err, res) => {
+        dbo.collection('auth').find(search).toArray((err, res) => {
             if (err) throw err;
             if (res.length == 0) {
                 dbo.collection("auth").insertOne(newUser, (err, res) => {
                     if (err) throw err;
-                    console.log("User added to database")
+                    console.log('User added to database');
                 })
             }
             db.close();
-        })
+        });
     });
 
     await axios.post('http://localhost:4009/events', {
@@ -50,10 +50,11 @@ app.post('/login', (req, response) => {
 
     MongoClient.connect(url, (err, db) => {
         if (err) throw err;
-        var dbo = db.db("ClassroomMS");
+        var dbo = db.db('ClassroomMS');
 
-        dbo.collection("auth").find({ email: email }).toArray((err, res) => {
+        dbo.collection('auth').find({ email: email }).toArray((err, res) => {
             if (err) throw err;
+            
             if (res.length == 0) {
                 response.status(401).send({});
             } 

@@ -13,11 +13,6 @@ const Posts = () => {
   const params = qs.parse(location.search.substring(1));
   const classId = params.classId;
 
-  const fetchPosts = async () => {
-    const res = await axios.get('http://localhost:4002/get_posts/' + classId);
-    setPosts(res.data);
-  };
-
   const createPost = async (e) => {
     e.preventDefault();
     const res = await axios.post('http://localhost:4002/create_post', { classId, postTitle });
@@ -45,10 +40,6 @@ const Posts = () => {
     });
   }
 
-  useEffect(() => {
-    fetchPosts();
-  }, [createComment]);
-
   const renderComments = (commentArr) => {
 
     var allComments = <div></div>;
@@ -62,9 +53,9 @@ const Posts = () => {
   }
 
    var renderedPosts = <div></div>;
-   console.log(posts);
    if (Object.keys(posts).length > 0) {
      renderedPosts = Object.values(posts).map(post => {
+       console.log('rendering posts.');
        return (
          <form key={post.id} className={styles.singlePost} onSubmit={e => createComment(e, post.id)}>
             <p className={styles.postTitle}>
@@ -86,6 +77,15 @@ const Posts = () => {
        );
      });
    }
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const res = await axios.get('http://localhost:4002/get_posts/' + classId);
+      setPosts(res.data);
+    };
+    
+    fetchPosts();
+  }, []);
 
   return (
     <div className={styles.centerPosts}>
