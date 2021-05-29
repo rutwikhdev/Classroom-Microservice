@@ -18,7 +18,6 @@ app.post('/create_class', async (req, res) => {
     const { userId, title } = req.body;
     const newClass = { id: classId, data: { classId: classId, title: title }}
 
-    // FOR -> users[userId].push(classId); ->
     await MongoClient.connect(url, (err, db) => {
         if (err) throw err;
         var dbo = db.db('ClassroomMS');
@@ -31,7 +30,6 @@ app.post('/create_class', async (req, res) => {
         db.close();
     });
 
-    // FOR -> classes[classId] = {classId: classId, title: title}; ->
     await MongoClient.connect(url, (err, db) => {
         if (err) throw err;
         var dbo = db.db('ClassroomMS');
@@ -72,7 +70,6 @@ app.post('/add_class', async (req, res) => {
 app.get('/get_classes/:id', async (req, response) => {
     const userId = req.params.id;
     let resClassList = [];
-    // const clist = users[userId];
 
     await MongoClient.connect(url, (err, db) => {
         if (err) throw err;
@@ -95,8 +92,6 @@ app.get('/get_classes/:id', async (req, response) => {
             db.close();
         });
     });
-
-    res.status(200).send({data: resClassList});
 });
 
 async function resolvePromise(dbo, x) {

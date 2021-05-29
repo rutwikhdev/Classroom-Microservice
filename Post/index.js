@@ -3,19 +3,30 @@ const bodyParser = require('body-parser');
 const axios = require('axios');
 const {randomBytes} = require('crypto');
 const cors = require('cors');
+const MongoClient = require('mongodb').MongoClient;
 
 const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
 
-posts = { 'classid1': [{ id: 'random(6)', title: 'post1', comments: ['comment1', 'comment2']}] };
+var url = 'mongodb://localhost:27017'
 
 app.post('/create_post', async (req, res) => {
     const id = randomBytes(6).toString('hex');
     const { classId, postTitle } = req.body;
+    const newPost = { id: id, title: postTitle, comments: [] }
+    
+    await MongoClient.connect(url, (err, db) => {
+        if (err) throw err;
+        var dbo = db.db('ClassroomMS');
 
-    posts[classId].push({
-        id: id, title: postTitle, comments: []
+        dbo.collection('posts').updateOne(
+            { 'classId': classId },
+            { $push: { 'data': newPost } }
+        )
+
+        db.close();
     });
 
     await axios.post('http://localhost:4009/events', {
@@ -23,32 +34,67 @@ app.post('/create_post', async (req, res) => {
         data: 'postid'
     });
 
-    res.status(200).send(posts[classId]);
+    await MongoClient.connect(url, (err, db) => {
+        if (err) throw err;
+        var dbo = db.db('ClassroomMS');
+
+        dbo.collection('posts').find({ classId: classId }).toArray((err, resp) => {
+            if (err) throw err;
+            res.status(200).send(resp.data);
+        });
+        
+        db.close();
+    });
 })
 
-app.post('/add_comment', (req, res) => {
+app.post('/add_comment', async (req, res) => {
     const data = req.body;
-    const arr = posts[data.class];
 
-    for (i in arr) {
-      if (arr[i].id == data.id) {
-        arr[i]['comments'].push(data.text);
-      }
-    }
+    await MongoClient.connect(url, (err, db) => {
+        if (err) throw err;
+        var dbo = db.db('ClassroomMS');
+
+        dbo.collection('posts').updateOne(
+            { 'classId': data.class, 'data.id': data.id },
+            { '$push': 
+                { 'data.$.comments': data.text } 
+            }
+        );
+
+        db.close();
+    })
+
     console.log(posts[data.class]);
 })
 
-app.get('/get_posts/:id', (req, res) => {
+app.get('/get_posts/:id', async (req, res) => {
     const classId = req.params.id;
-    res.status(200).send(posts[classId]);
+
+    await MongoClient.connect(url, (err, db) => {
+        if (err) throw err;
+        var dbo = db.db('ClassroomMS');
+
+        dbo.collection('posts').find({ classId: classId }).toArray((err, resp) => {
+            if (err) throw err;
+            console.log(resp)
+            res.status(200).send(resp[0].data);
+        });
+
+        db.close();
+    });
 })
 
-app.post('/events', (req, res) => {
+app.post('/events', async (req, res) => {
     const event = req.body;
     console.log('Received event:', event.type);
 
     if (event.type == 'ClassCreated') {
-        posts[event.data] = [];
+        await MongoClient.connect(url, (err, db) => {
+            if (err) throw err;
+            var dbo = db.db('ClassroomMS');
+
+            dbo.collection('posts').insertOne({ classId: event.data, data: [] })
+        });
     }
 
     res.send({});
